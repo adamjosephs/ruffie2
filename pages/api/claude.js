@@ -3,8 +3,8 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  // Your API key
-  const apiKey = "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";
+  // Your API key (corrected - removed extra dash)
+  const apiKey = "sk-ant-api03-HkbWZaOvsVfvWvzSh2bBGmeAVQpiaT8mLOOnMSkjL6a1D0XnRVMYie2GHj8R1E2ar5a3yLBekHvU9KyakfJ9w-OwLQEQAA";
 
   const { model, max_tokens, messages } = req.body;
 
