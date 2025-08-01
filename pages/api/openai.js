@@ -3,8 +3,8 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  // You'll need to get an OpenAI API key from https://platform.openai.com/api-keys
-  const apiKey = "YOUR_OPENAI_API_KEY_HERE";
+  // Your OpenAI API key
+  const apiKey = "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";
 
   const { messages, max_tokens = 1500 } = req.body;
 
