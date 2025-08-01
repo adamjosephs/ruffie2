@@ -88,25 +88,22 @@ COACHING PROCESS:
 
 Remember: Every joke must carry a structural point. Every persona response must advance CEI clarity.`;
 
-    // Only send role and content to API
-    const apiMessages = conversationHistory
-      .slice(-10)
-      .map(({ role, content }) => ({ role, content }));
+    // Build messages for OpenAI (different format than Anthropic)
+    const messages = [
+      { role: "system", content: systemPrompt },
+      ...conversationHistory.slice(-10).map(({ role, content }) => ({ role, content })),
+      { role: "user", content: `Please coach this risk statement: "${riskStatement}"` }
+    ];
 
     try {
-      const response = await fetch("/api/claude", {
+      const response = await fetch("/api/openai", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          model: "claude-3-sonnet-20240229",
-          max_tokens: 1500,
-          messages: [
-            { role: "user", content: systemPrompt },
-            ...apiMessages,
-            { role: "user", content: `Please coach this risk statement: "${riskStatement}"` }
-          ]
+          messages: messages,
+          max_tokens: 1500
         })
       });
 
@@ -115,9 +112,9 @@ Remember: Every joke must carry a structural point. Every persona response must 
       }
 
       const data = await response.json();
-      return data.content && data.content[0] && data.content[0].text
-        ? data.content[0].text
-        : "⚠️ No response from Claude.";
+      return data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content
+        ? data.choices[0].message.content
+        : "⚠️ No response from ChatGPT.";
     } catch (error) {
       console.error("Error in risk coaching:", error);
       throw error;
@@ -225,6 +222,7 @@ Remember: Every joke must carry a structural point. Every persona response must 
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">RUFfie</h1>
             <p className="text-gray-600">Risk Up Front Friendly Intelligence Engine</p>
+            <p className="text-sm text-green-600 mt-2">Powered by ChatGPT</p>
           </div>
           <form className="space-y-6" onSubmit={handleLogin}>
             <div>
@@ -272,6 +270,7 @@ Remember: Every joke must carry a structural point. Every persona response must 
             <div className="flex items-center">
               <h1 className="text-2xl font-bold text-gray-900">RUFfie</h1>
               <span className="ml-3 text-sm text-gray-500">Risk Coaching Session</span>
+              <span className="ml-3 text-xs text-green-600">Powered by ChatGPT</span>
             </div>
             <div className="flex items-center space-x-4">
               <select
