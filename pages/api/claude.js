@@ -3,8 +3,8 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  // Your API key (corrected - removed extra dash)
-  const apiKey = "sk-ant-api03-HkbWZaOvsVfvWvzSh2bBGmeAVQpiaT8mLOOnMSkjL6a1D0XnRVMYie2GHj8R1E2ar5a3yLBekHvU9KyakfJ9w-OwLQEQAA";
+  // Your corrected API key
+  const apiKey = "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";
 
   const { model, max_tokens, messages } = req.body;
 
@@ -19,8 +19,7 @@ export default async function handler(req, res) {
       headers: {
         "x-api-key": apiKey,
         "anthropic-version": "2023-06-01",
-        "content-type": "application/json",
-        "anthropic-beta": "messages-2023-12-15"
+        "content-type": "application/json"
       },
       body: JSON.stringify({
         model,
@@ -29,13 +28,10 @@ export default async function handler(req, res) {
       }),
     });
 
-    // Log the response for debugging
-    console.log("Anthropic Response Status:", anthropicResponse.status);
-    
     const data = await anthropicResponse.json();
-    console.log("Anthropic Response Data:", data);
     
     if (!anthropicResponse.ok) {
+      console.error("Anthropic API Error:", data);
       return res.status(anthropicResponse.status).json({ 
         error: "Anthropic API Error", 
         details: data,
