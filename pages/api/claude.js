@@ -19,7 +19,8 @@ export default async function handler(req, res) {
       headers: {
         "x-api-key": apiKey,
         "anthropic-version": "2023-06-01",
-        "content-type": "application/json"
+        "content-type": "application/json",
+        "anthropic-beta": "messages-2023-12-15"
       },
       body: JSON.stringify({
         model,
@@ -28,10 +29,18 @@ export default async function handler(req, res) {
       }),
     });
 
+    // Log the response for debugging
+    console.log("Anthropic Response Status:", anthropicResponse.status);
+    
     const data = await anthropicResponse.json();
+    console.log("Anthropic Response Data:", data);
     
     if (!anthropicResponse.ok) {
-      return res.status(anthropicResponse.status).json(data);
+      return res.status(anthropicResponse.status).json({ 
+        error: "Anthropic API Error", 
+        details: data,
+        status: anthropicResponse.status
+      });
     }
 
     res.status(200).json(data);
